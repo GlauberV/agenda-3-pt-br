@@ -30,11 +30,10 @@ public class AlunoPreferences {
 
     public String getVersao(){
         SharedPreferences versaoSalva = getSharedPreferencs();
-        return versaoSalva.getString(VERSAO_DO_DADO, ""); //1
+        return versaoSalva.getString(VERSAO_DO_DADO, "");
+    }
+
+    public boolean temVersao() {
+        return !getVersao().isEmpty();
     }
 }
-
-// 1. Cuidado! Você precisa escolher que valor será retorando, ao invés de simplismente devolver a
-// versao que foi salva:
-// return String.ValueOf(versaoSalva) -> Não faça isso! Por que assim você não vai poder escolher a
-// key dos dados que você que acessar.

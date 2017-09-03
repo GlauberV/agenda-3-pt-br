@@ -68,6 +68,7 @@ INSERT INTO ALUNO VALUES('d2fc595c-57af-4181-8411-249b24231957',NULL,1,'rua da f
 INSERT INTO ALUNO VALUES('d53b0c8a-fc57-4992-af17-f2ae309d3381',NULL,1,'Emulador local',0,'2017-08-03 11:37:55.250000','Mr Nexus S API 24',10.0E0,'www.deondeomotorolanaochegouainda.com','678 678 678')
 INSERT INTO ALUNO VALUES('e6ce6537-1bb8-49f8-9f24-09a9a149d500',NULL,1,'localHost:8080',0,'2017-08-01 11:06:08.256000','Administrador',10.0E0,'www.alura.com.br','155 551 155 551')
 INSERT INTO ALUNO VALUES('ebb08e42-cf7f-432f-8f2c-459fd260f557',NULL,0,'Emulador local',0,'2017-08-24 12:22:43.025000','Mr Nexus S API 24',10.0E0,'www.deondeomotorolanaochegouainda.com','25500255000')
+INSERT INTO ALUNO VALUES('f9887f9b-3b47-4a1e-bbbd-1106c5e1c591',NULL,1,'',0,'2017-08-31 14:44:28.263000','S\u00f3Apaga',0.0E0,'','')
 INSERT INTO ALUNO VALUES('fb8a8b40-7c02-44fe-bf6f-a7fe0263c684',NULL,1,'rua do arata',0,'2017-08-29 15:32:35.677000','Arata',10.0E0,'www.sitedoarata.com','560560560')
 INSERT INTO ALUNO VALUES('fd1ebd01-396c-4358-a12f-05ffcabd6766',NULL,1,'Rua do Sam',0,'2017-08-03 11:25:50.641000','Sam',9.0E0,'www.sitedosam.com','123 123 123')
 INSERT INTO ALUNO VALUES('fd9dd79c-2688-445e-a401-5cd498086411',NULL,1,'R. Number One',0,'2017-07-26 11:42:46.961000','First Man Here',9.0E0,'www.google.com.br','12341234')

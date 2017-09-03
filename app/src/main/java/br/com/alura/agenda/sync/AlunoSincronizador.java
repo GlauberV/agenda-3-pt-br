@@ -1,6 +1,7 @@
 package br.com.alura.agenda.sync;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -18,21 +19,42 @@ public class AlunoSincronizador {
 
     private final Context context;
     private EventBus eventBus = EventBus.getDefault();
+    private AlunoPreferences preferences;
+
 
     public AlunoSincronizador(Context context) {
         this.context = context;
+        preferences = new AlunoPreferences(context);
     }
 
-    public void buscaAlunos() {
-        Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().lista();
+    public void buscaTodos(){
+        if (preferences.temVersao()){
+            Log.i("busca todos", "Tem versão");
+            buscaNovos();
+        } else {
+            Log.i("busca todos", "Nao tem versão");
+            buscaAlunos();
+        }
+    }
 
-        call.enqueue(new Callback<AlunoSync>() {
+    private void buscaNovos(){
+        Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().novos(preferences.getVersao());
+        call.enqueue(buscaAlunosCallback());
+    }
+
+    private void buscaAlunos() {
+        Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().lista();
+        call.enqueue(buscaAlunosCallback());
+    }
+
+    @NonNull
+    private Callback<AlunoSync> buscaAlunosCallback() {
+        return new Callback<AlunoSync>() {
             @Override
             public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
                 AlunoSync alunoSync = response.body();
-
                 String versao = alunoSync.getMomentoDaUltimaModificacao();
-                AlunoPreferences preferences = new AlunoPreferences(context);
+
                 preferences.salvarVersao(versao);
 
                 AlunoDAO dao = new AlunoDAO(context);
@@ -40,7 +62,7 @@ public class AlunoSincronizador {
                 dao.close();
                 eventBus.post(new AtualizaListaAlunoEvent());
 
-                Log.i("Versao", preferences.getVersao());
+                Log.i("Versão", preferences.getVersao());
             }
 
             @Override
@@ -48,6 +70,6 @@ public class AlunoSincronizador {
                 Log.e("onFailure chamado", t.getMessage());
                 eventBus.post(new AtualizaListaAlunoEvent());
             }
-        });
+        };
     }
 }
