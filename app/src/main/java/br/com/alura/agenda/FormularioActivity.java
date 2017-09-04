@@ -62,7 +62,6 @@ public class FormularioActivity extends AppCompatActivity {
                 helper.carregaImagem(caminhoFoto);
             }
         }
-
     }
 
     @Override
@@ -78,6 +77,8 @@ public class FormularioActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_formulario_ok:
                 Aluno aluno = helper.pegaAluno();
+
+                aluno.desincroniza();
 
                 AlunoDAO dao = new AlunoDAO(this);
                 if (aluno.getId() != null) {

@@ -1,7 +1,6 @@
 package br.com.alura.agenda.modelo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
@@ -19,6 +18,15 @@ public class Aluno implements Serializable {
     private Double nota;
     private String caminhoFoto;
     private int desativado;
+    private int sincronizado;
+
+    public int getSincronizado() {
+        return sincronizado;
+    }
+
+    public void setSincronizado(int sincronizado) {
+        this.sincronizado = sincronizado;
+    }
 
     public void setDesativado(int desativado) {
         this.desativado = desativado;
@@ -91,5 +99,13 @@ public class Aluno implements Serializable {
 
     public boolean estaDesativado() {
         return desativado == 1;
+    }
+
+    public void sincroniza() {
+        this.sincronizado = 1;
+    }
+
+    public void desincroniza() {
+        this.sincronizado = 0;
     }
 }
