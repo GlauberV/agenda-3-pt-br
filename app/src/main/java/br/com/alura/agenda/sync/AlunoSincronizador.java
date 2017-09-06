@@ -30,8 +30,8 @@ public class AlunoSincronizador {
         preferences = new AlunoPreferences(context);
     }
 
-    public void buscaTodos(){
-        if (preferences.temVersao()){
+    public void buscaTodos() {
+        if (preferences.temVersao()) {
             Log.i("busca todos", "Tem versão");
             buscaNovos();
         } else {
@@ -40,7 +40,7 @@ public class AlunoSincronizador {
         }
     }
 
-    private void buscaNovos(){
+    private void buscaNovos() {
         Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().novos(preferences.getVersao());
         call.enqueue(buscaAlunosCallback());
     }
@@ -64,6 +64,7 @@ public class AlunoSincronizador {
                 dao.sincroniza(alunoSync.getAlunos());
                 dao.close();
                 eventBus.post(new AtualizaListaAlunoEvent());
+                sincronizaAlunosInternos();
 
                 Log.i("Versão", preferences.getVersao());
             }
@@ -76,7 +77,7 @@ public class AlunoSincronizador {
         };
     }
 
-    public void sincronizaAlunosInternos(){
+    private void sincronizaAlunosInternos() {
         final AlunoDAO dao = new AlunoDAO(context);
         List<Aluno> alunos = dao.listaNaoSincronizado();
         dao.close();
@@ -94,6 +95,24 @@ public class AlunoSincronizador {
             public void onFailure(Call<AlunoSync> call, Throwable t) {
 
             }
+        });
+    }
+
+    public void deleta(final Aluno aluno) {
+        Call<Void> call = new RetrofitInicializador().getAlunoService().deleta(aluno.getId());
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                AlunoDAO dao = new AlunoDAO(context);
+                dao.deleta(aluno);
+                dao.close();
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+
         });
     }
 }
