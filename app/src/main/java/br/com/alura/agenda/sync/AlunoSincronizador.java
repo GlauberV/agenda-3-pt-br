@@ -6,6 +6,9 @@ import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import br.com.alura.agenda.dao.AlunoDAO;
@@ -56,17 +59,10 @@ public class AlunoSincronizador {
             @Override
             public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
                 AlunoSync alunoSync = response.body();
-                String versao = alunoSync.getMomentoDaUltimaModificacao();
+                sincroniza(alunoSync);
 
-                preferences.salvarVersao(versao);
-
-                AlunoDAO dao = new AlunoDAO(context);
-                dao.sincroniza(alunoSync.getAlunos());
-                dao.close();
                 eventBus.post(new AtualizaListaAlunoEvent());
                 sincronizaAlunosInternos();
-
-                Log.i("Versão", preferences.getVersao());
             }
 
             @Override
@@ -75,6 +71,42 @@ public class AlunoSincronizador {
                 eventBus.post(new AtualizaListaAlunoEvent());
             }
         };
+    }
+
+    public void sincroniza(AlunoSync alunoSync) {
+        String versao = alunoSync.getMomentoDaUltimaModificacao();
+
+        Log.i("versão externa", versao);
+
+        if (temVersaoNova(versao)){
+            preferences.salvarVersao(versao);
+            Log.i("versão atual", preferences.getVersao());
+
+            AlunoDAO dao = new AlunoDAO(context);
+            dao.sincroniza(alunoSync.getAlunos());
+            dao.close();
+        }
+    }
+
+    private boolean temVersaoNova(String versao) {
+
+        if (!preferences.temVersao()) return true;
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        try {
+            Date dataExterna = format.parse(versao);
+
+            String versaoInterna = preferences.getVersao();
+            Log.i("versão interna", versaoInterna);
+            Date dataInterna = format.parse(versaoInterna);
+
+            return dataExterna.after(dataInterna);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     private void sincronizaAlunosInternos() {
@@ -87,8 +119,7 @@ public class AlunoSincronizador {
             @Override
             public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
                 AlunoSync alunoSync = response.body();
-                dao.sincroniza(alunoSync.getAlunos());
-                dao.close();
+                sincroniza(alunoSync);
             }
 
             @Override
